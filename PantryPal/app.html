@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PantryPal</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#E8E4DC;min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:40px 20px}
+.wrap{display:flex;justify-content:center;align-items:flex-start}
+.phone{width:260px;background:#FAFAF8;border-radius:36px;overflow:hidden;border:2px solid #C8C4BC;box-shadow:0 16px 48px rgba(0,0,0,.15)}
+.notch-bar{background:#1A1A1A;padding:8px 0 4px;display:flex;justify-content:center}
+.notch{width:80px;height:20px;background:#1A1A1A;border-radius:0 0 14px 14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.notch-cam{width:7px;height:7px;border-radius:50%;background:#2a2a2a;border:1.5px solid #333}
+.notch-spk{width:26px;height:3px;border-radius:4px;background:#2a2a2a}
+.status-bar{display:flex;justify-content:space-between;align-items:center;padding:5px 16px 3px;font-size:10px;color:#888780;background:#FAFAF8}
+
+.screen{display:none}
+.screen.active{display:block}
+
+/* SPLASH */
+.s1-body{background:linear-gradient(160deg,#1D9E75 0%,#085041 100%);padding:40px 20px 36px;min-height:440px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.s1-logo{width:72px;height:72px;border-radius:22px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:20px;border:1.5px solid rgba(255,255,255,.2)}
+.s1-body h2{font-family:'Lora',serif;font-size:20px;color:#fff;font-weight:600;margin-bottom:10px;line-height:1.3}
+.s1-body p{font-size:12px;color:rgba(255,255,255,.7);line-height:1.7;margin-bottom:28px;padding:0 4px}
+.s1-btn{background:#fff;color:#0F6E56;border:none;border-radius:14px;padding:12px 32px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-bottom:12px;font-family:'DM Sans',sans-serif}
+.s1-btn:hover{background:#E1F5EE}
+.s1-link{font-size:11px;color:rgba(255,255,255,.5)}
+.s1-link span{color:rgba(255,255,255,.85);font-weight:500;cursor:pointer}
+.s1-dots{display:flex;gap:5px;margin-top:24px;justify-content:center}
+.s1-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3)}
+.s1-dot.on{background:#fff;width:16px;border-radius:4px}
+
+/* HOME */
+.s2-nav{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px}
+.s2-greeting p{font-size:10px;color:#888780}
+.s2-greeting h3{font-family:'Lora',serif;font-size:14px;color:#2C2C2A}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1D9E75,#0F6E56);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+.hero-card{background:linear-gradient(135deg,#1D9E75,#085041);border-radius:18px;padding:14px;margin:0 14px 12px;position:relative;overflow:hidden}
+.hero-card::after{content:'🍽️';position:absolute;right:-4px;bottom:-8px;font-size:46px;opacity:.18}
+.htag{display:inline-block;background:rgba(255,255,255,.2);border-radius:8px;padding:2px 8px;font-size:9px;color:rgba(255,255,255,.9);margin-bottom:6px}
+.hero-card h4{font-family:'Lora',serif;font-size:13px;color:#fff;margin-bottom:3px}
+.hero-card p{font-size:10px;color:rgba(255,255,255,.7)}
+.hero-pills{display:flex;gap:6px;margin-top:8px}
+.hpill{background:rgba(255,255,255,.15);border-radius:8px;padding:3px 8px;font-size:9px;color:#fff}
+.sec{padding:0 14px 10px}
+.sec-lbl{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#888780;margin-bottom:6px}
+.ing-input{width:100%;border:1.5px solid #E0DDD6;border-radius:10px;padding:7px 10px;font-size:11px;color:#2C2C2A;background:#fff;font-family:'DM Sans',sans-serif}
+.ing-input:focus{outline:none;border-color:#1D9E75}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.chip{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:500;background:#EAF3DE;color:#27500A;border:1px solid #97C459}
+.chip.add{background:#fff;color:#888780;border:1.5px dashed #D3D1C7;cursor:pointer}
+.prefs{display:flex;gap:5px;flex-wrap:wrap}
+.pref{padding:4px 10px;border-radius:20px;font-size:10px;border:1.5px solid #E0DDD6;color:#5F5E5A;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif}
+.pref.on{background:#1D9E75;color:#fff;border-color:#1D9E75}
+.droprow{display:flex;gap:7px;margin-top:7px}
+.droprow select{flex:1;border:1.5px solid #E0DDD6;border-radius:9px;padding:6px 8px;font-size:10px;color:#5F5E5A;background:#fff;font-family:'DM Sans',sans-serif}
+.find-btn{display:block;width:calc(100% - 28px);margin:8px 14px;background:#1D9E75;color:#fff;border:none;border-radius:13px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.find-btn:hover{background:#0F6E56}
+
+/* RESULTS */
+.rh{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #EEEBE4}
+.back{width:26px;height:26px;border-radius:9px;background:#EAF3DE;display:flex;align-items:center;justify-content:center;font-size:12px;color:#1D9E75;font-weight:700;cursor:pointer;flex-shrink:0;border:none}
+.rh h3{font-family:'Lora',serif;font-size:14px;color:#2C2C2A;flex:1}
+.cbadge{background:#EAF3DE;color:#3B6D11;border-radius:8px;padding:2px 8px;font-size:9px;font-weight:600}
+.frow{display:flex;gap:5px;padding:8px 14px;overflow-x:auto}
+.fc{padding:4px 11px;border-radius:20px;font-size:10px;white-space:nowrap;border:1.5px solid #E0DDD6;color:#5F5E5A;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif}
+.fc.on{background:#1D9E75;color:#fff;border-color:#1D9E75}
+.ctx{text-align:center;font-size:9px;color:#888780;padding:0 14px 8px}
+.ctx span{background:#F1EFE8;border-radius:8px;padding:2px 8px}
+.rcard{margin:0 14px 9px;background:#fff;border-radius:14px;border:1.5px solid #EEEBE4;display:flex;cursor:pointer;transition:border-color .15s}
+.rcard:hover{border-color:#1D9E75}
+.rthumb{width:66px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px;border-radius:12px 0 0 12px}
+.rthumb.g{background:linear-gradient(135deg,#EAF3DE,#C0DD97)}
+.rthumb.a{background:linear-gradient(135deg,#FAEEDA,#FAC775)}
+.rthumb.p{background:linear-gradient(135deg,#FBEAF0,#F4C0D1)}
+.rinfo{flex:1;padding:8px 8px 8px 6px}
+.rinfo h4{font-family:'Lora',serif;font-size:12px;color:#2C2C2A;margin-bottom:4px}
+.rmeta{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.rmeta span{font-size:9px;color:#888780}
+.ds{width:3px;height:3px;border-radius:50%;background:#D3D1C7}
+.dtag{font-size:8px;padding:2px 6px;border-radius:7px;background:#EAF3DE;color:#3B6D11;font-weight:500}
+.dtag.veg{background:#E6F1FB;color:#185FA5}
+.hrt{margin-left:auto;font-size:13px;color:#D3D1C7;background:none;border:none;cursor:pointer}
+
+/* DETAIL */
+.dimg{height:110px;background:linear-gradient(135deg,#1D9E75,#085041);position:relative;display:flex;align-items:center;justify-content:center;font-size:44px}
+.dimgo{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(to top,rgba(4,52,44,.8),transparent)}
+.dimgo h3{font-family:'Lora',serif;font-size:15px;color:#fff}
+.dback{position:absolute;top:8px;left:10px;width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;cursor:pointer;border:none}
+.dfav{position:absolute;top:8px;right:10px;width:26px;height:26px;border-radius:9px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;border:none}
+.dcontent{padding:10px 14px}
+.dpills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.dpill{font-size:9px;padding:3px 9px;border-radius:20px;background:#F1EFE8;color:#5F5E5A;font-weight:500}
+.dpill.g{background:#EAF3DE;color:#27500A}
+.dsec{margin-bottom:10px}
+.dsec h5{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#888780;margin-bottom:7px;display:flex;align-items:center;gap:5px}
+.dsec h5::after{content:'';flex:1;height:1px;background:#EEEBE4}
+.ii{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid #F5F3EE}
+.idot{width:6px;height:6px;border-radius:50%;background:#1D9E75;flex-shrink:0}
+.ii span{font-size:10px;color:#444441}
+.iamt{margin-left:auto;font-size:9px;color:#888780}
+.si{display:flex;gap:8px;margin-bottom:7px;align-items:flex-start}
+.snum{width:18px;height:18px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+.si p{font-size:10px;color:#444441;line-height:1.6}
+.save-btn{display:block;width:calc(100% - 28px);margin:2px 14px 10px;background:#1D9E75;color:#fff;border:none;border-radius:13px;padding:10px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;font-family:'DM Sans',sans-serif}
+.save-btn:hover{background:#0F6E56}
+
+/* BOTTOM NAV */
+.bnav{display:flex;justify-content:space-around;padding:9px 0 11px;border-top:1.5px solid #EEEBE4;background:#fff}
+.bi{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:8px;font-weight:500;color:#B4B2A9;cursor:pointer;font-family:'DM Sans',sans-serif}
+.bi.on{color:#1D9E75}
+.bi-ic{font-size:16px;line-height:1}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="phone">
+  <div class="notch-bar">
+    <div class="notch">
+      <div class="notch-cam"></div>
+      <div class="notch-spk"></div>
+      <div class="notch-cam"></div>
+    </div>
+  </div>
+
+  <!-- SPLASH -->
+  <div class="screen active" id="sc-splash">
+    <div class="s1-body">
+      <div class="s1-logo">🍳</div>
+      <h2>What To Cook Today?</h2>
+      <p>Tell us what's in your kitchen and we'll create the perfect recipe — powered by AI</p>
+      <button class="s1-btn" onclick="show('home')">Get Started</button>
+      <div class="s1-link">Already have an account? <span onclick="show('home')">Sign In</span></div>
+      <div class="s1-dots">
+        <div class="s1-dot on"></div>
+        <div class="s1-dot"></div>
+        <div class="s1-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen" id="sc-home">
+    <div class="status-bar"><span>9:41</span><span>WiFi 🔋</span></div>
+    <div class="s2-nav">
+      <div class="s2-greeting"><p>Good morning!</p><h3>Rajan 👋</h3></div>
+      <div class="avatar">R</div>
+    </div>
+    <div class="hero-card">
+      <div class="htag">Today's suggestion</div>
+      <h4>Dal Bhat with Achar</h4>
+      <p>Classic Nepali comfort meal</p>
+      <div class="hero-pills">
+        <div class="hpill">🕐 30 min</div>
+        <div class="hpill">🇳🇵 Nepali</div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-lbl">My Ingredients</div>
+      <input class="ing-input" placeholder="Type ingredient & press enter…"/>
+      <div class="chips">
+        <span class="chip">🌾 rice</span>
+        <span class="chip">🥚 egg</span>
+        <span class="chip">🍅 tomato</span>
+        <span class="chip add">+ add more</span>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-lbl">Diet</div>
+      <div class="prefs">
+        <span class="pref on" onclick="togglePref(this)">Vegetarian</span>
+        <span class="pref" onclick="togglePref(this)">Vegan</span>
+        <span class="pref" onclick="togglePref(this)">Non-veg</span>
+      </div>
+      <div class="droprow">
+        <select><option>🍛 Nepali</option><option>Indian</option><option>Any</option></select>
+        <select><option>⏱ 30 min</option><option>15 min</option><option>1 hr</option></select>
+      </div>
+    </div>
+    <button class="find-btn" onclick="show('results')">Find Recipes →</button>
+    <div style="height:8px"></div>
+    <div class="bnav">
+      <div class="bi on" onclick="show('home')"><div class="bi-ic">🏠</div>Home</div>
+      <div class="bi" onclick="show('results')"><div class="bi-ic">🔍</div>Explore</div>
+      <div class="bi"><div class="bi-ic">❤️</div>Saved</div>
+      <div class="bi"><div class="bi-ic">👤</div>Profile</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="sc-results">
+    <div class="status-bar"><span>9:41</span><span>WiFi 🔋</span></div>
+    <div class="rh">
+      <button class="back" onclick="show('home')">←</button>
+      <h3>Recipe Ideas</h3>
+      <div class="cbadge">3 found</div>
+    </div>
+    <div class="frow">
+      <span class="fc on">All</span>
+      <span class="fc">Quick</span>
+      <span class="fc">Vegetarian</span>
+      <span class="fc">Vegan</span>
+    </div>
+    <div class="ctx"><span>Based on: rice · egg · tomato</span></div>
+    <div class="rcard" onclick="show('detail')">
+      <div class="rthumb g">🍚</div>
+      <div class="rinfo">
+        <h4>Egg Fried Rice</h4>
+        <div class="rmeta">
+          <span>20 min</span><div class="ds"></div>
+          <span>Easy</span><div class="ds"></div>
+          <span class="dtag">Vegetarian</span>
+          <button class="hrt">♡</button>
+        </div>
+      </div>
+    </div>
+    <div class="rcard" onclick="show('detail')">
+      <div class="rthumb a">🍅</div>
+      <div class="rinfo">
+        <h4>Tomato Egg Drop Soup</h4>
+        <div class="rmeta">
+          <span>15 min</span><div class="ds"></div>
+          <span>Easy</span><div class="ds"></div>
+          <span class="dtag">Vegetarian</span>
+          <button class="hrt">♡</button>
+        </div>
+      </div>
+    </div>
+    <div class="rcard" onclick="show('detail')">
+      <div class="rthumb p">🫕</div>
+      <div class="rinfo">
+        <h4>Rice Tomato Khichdi</h4>
+        <div class="rmeta">
+          <span>25 min</span><div class="ds"></div>
+          <span>Easy</span><div class="ds"></div>
+          <span class="dtag veg">Vegan</span>
+          <button class="hrt">♡</button>
+        </div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="bi on" onclick="show('home')"><div class="bi-ic">🏠</div>Home</div>
+      <div class="bi on"><div class="bi-ic">🔍</div>Explore</div>
+      <div class="bi"><div class="bi-ic">❤️</div>Saved</div>
+      <div class="bi"><div class="bi-ic">👤</div>Profile</div>
+    </div>
+  </div>
+
+  <!-- DETAIL -->
+  <div class="screen" id="sc-detail">
+    <div class="status-bar"><span>9:41</span><span>WiFi 🔋</span></div>
+    <div class="dimg">
+      🍚
+      <button class="dback" onclick="show('results')">←</button>
+      <button class="dfav" id="fav-btn" onclick="toggleFav()">♡</button>
+      <div class="dimgo"><h3>Egg Fried Rice</h3></div>
+    </div>
+    <div class="dcontent">
+      <div class="dpills">
+        <span class="dpill g">Vegetarian</span>
+        <span class="dpill">⏱ 20 min</span>
+        <span class="dpill">Easy</span>
+        <span class="dpill">2 servings</span>
+      </div>
+      <div class="dsec">
+        <h5>Ingredients</h5>
+        <div class="ii"><div class="idot"></div><span>Cooked rice</span><span class="iamt">2 cups</span></div>
+        <div class="ii"><div class="idot"></div><span>Eggs</span><span class="iamt">2 pcs</span></div>
+        <div class="ii"><div class="idot"></div><span>Tomato, diced</span><span class="iamt">1 pc</span></div>
+        <div class="ii"><div class="idot"></div><span>Soy sauce, salt, oil</span><span class="iamt">to taste</span></div>
+      </div>
+      <div class="dsec">
+        <h5>Steps</h5>
+        <div class="si"><div class="snum">1</div><p>Heat oil in a wok on medium-high heat.</p></div>
+        <div class="si"><div class="snum">2</div><p>Beat and scramble eggs until just cooked, set aside.</p></div>
+        <div class="si"><div class="snum">3</div><p>Stir-fry diced tomato 2 min, add rice and mix well.</p></div>
+        <div class="si"><div class="snum">4</div><p>Add eggs back, season with soy sauce and serve hot.</p></div>
+      </div>
+    </div>
+    <button class="save-btn" id="save-btn" onclick="toggleSave()">❤ Save Recipe</button>
+    <div class="bnav">
+      <div class="bi on" onclick="show('home')"><div class="bi-ic">🏠</div>Home</div>
+      <div class="bi"><div class="bi-ic">🔍</div>Explore</div>
+      <div class="bi"><div class="bi-ic">❤️</div>Saved</div>
+      <div class="bi"><div class="bi-ic">👤</div>Profile</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+const screens = {
+  splash: 'sc-splash',
+  home:   'sc-home',
+  results:'sc-results',
+  detail: 'sc-detail'
+};
+
+function show(key) {
+  Object.values(screens).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const target = document.getElementById(screens[key]);
+  if (target) target.classList.add('active');
+}
+
+function togglePref(el) {
+  el.parentElement.querySelectorAll('.pref').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+}
+
+let saved = false;
+function toggleSave() {
+  saved = !saved;
+  const btn = document.getElementById('save-btn');
+  btn.textContent = saved ? '✓ Saved!' : '❤ Save Recipe';
+  btn.style.background = saved ? '#085041' : '#1D9E75';
+}
+
+let faved = false;
+function toggleFav() {
+  faved = !faved;
+  document.getElementById('fav-btn').textContent = faved ? '❤' : '♡';
+}
+</script>
+
+</body>
+</html>
